@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  hangzhou-house-visualization:
+    image: sakimi9/dpv-shp_hangzhou:latest
+    container_name: DPV-SHP_HangZhou
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      # volumes:
+      # 如果需要挂载自定义数据文件，可以取消注释下面的行
+      # - ./public/house_data.json:/usr/share/nginx/html/house_data.json:ro
+    networks:
+      - house-viz-network
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:80" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+networks:
+  house-viz-network:
+    driver: bridge
+
+# 可选：添加数据卷用于持久化
+# volumes:
+#   house-data:
+#     driver: local
